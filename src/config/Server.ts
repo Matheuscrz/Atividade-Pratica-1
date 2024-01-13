@@ -1,35 +1,34 @@
-import express from "express";
-import bodyParser from "body-parser";
-import Routes from "../routes/Routes";
+import express, { Application } from "express";
+import Database from "./Database";
+import { Routes } from "../routes/Routes";
+import { ErrorHandlerMiddleware } from "../middlewares/ErroMiddleware";
 
-class Server {
-  private app: express.Application;
-  private PORT: number;
-  private serverInstance: any;
+export class Server {
+  private app: Application = express();
+  private port: number = parseInt(process.env.PORT || "3000", 10);
+  private routes: Routes = new Routes();
 
   constructor() {
-    this.app = express();
-    this.PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-
-    this.app.use(bodyParser.json());
-    this.app.use(new Routes().getRouter());
+    this.setup();
   }
 
-  public start(): void {
-    this.serverInstance = this.app.listen(process.env.PORT || 3000, () => {
-      console.log(
-        `O servidor está rodando na porta ${this.serverInstance.address().port}`
-      );
+  private async setup(): Promise<void> {
+    try {
+      await Database.initialize();
+      await Database.connect();
+    } catch (error) {
+      console.error("Falha ao conectar-se ao banco de dados:", error);
+      process.exit(1); // Se não conseguir conectar, encerra o aplicativo
+    }
+
+    this.app.use(express.json());
+    this.app.use(ErrorHandlerMiddleware.handle);
+    this.app.use(this.routes.getRouter());
+  }
+
+  start(): void {
+    this.app.listen(this.port, () => {
+      console.log(`Servidor rodando na porta: ${this.port}`);
     });
   }
-
-  public close(): void {
-    this.serverInstance.close();
-  }
-
-  public getApp(): express.Application {
-    return this.app;
-  }
 }
-
-export default Server;

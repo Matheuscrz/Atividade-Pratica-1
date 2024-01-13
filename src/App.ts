@@ -1,9 +1,15 @@
-import Server from "./config/Server";
+import { Server } from "./config/Server";
 
 class App {
+  private server: Server;
+
   constructor() {
-    new Server();
+    this.server = new Server();
+  }
+
+  start(): void {
+    this.server.start();
   }
 }
-
-new App();
+const app = new App();
+app.start();
