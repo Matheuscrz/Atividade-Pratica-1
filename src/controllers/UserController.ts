@@ -9,7 +9,7 @@ export class UserController {
 
       // Utilize o método query para inserir o usuário
       const insertQuery = `
-        INSERT INTO "usuario" (cpf, nome, data_nascimento) VALUES ($1, $2, $3) RETURNING *;
+        INSERT INTO "sistema.usuario" (cpf, nome, data_nascimento) VALUES ($1, $2, $3) RETURNING *;
       `;
 
       const result: QueryResult = await Database.query(insertQuery, [
@@ -30,7 +30,7 @@ export class UserController {
 
       // Utilize o método query para obter o usuário pelo CPF
       const selectQuery = `
-        SELECT * FROM "usuario" WHERE cpf = $1;
+        SELECT * FROM "sistema.usuario" WHERE cpf = $1;
       `;
 
       const result: QueryResult = await Database.query(selectQuery, [cpf]);

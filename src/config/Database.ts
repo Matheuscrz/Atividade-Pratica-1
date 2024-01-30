@@ -48,7 +48,8 @@ class Database {
       if (resultTable.rows.length === 0) {
         // Cria a tabela de usuário se não existir
         await this.query(`
-          CREATE TABLE IF NOT EXISTS "usuario" (
+          CREATE SCHEMA IF NOT EXISTS "sistema";
+          CREATE TABLE IF NOT EXISTS "sistema.usuario" (
             "id" SERIAL PRIMARY KEY,
             "cpf" VARCHAR(15) NOT NULL,
             "nome" VARCHAR(255) NOT NULL,
@@ -63,7 +64,7 @@ class Database {
   }
 
   async initialize(): Promise<void> {
-    await this.databaseCreator.createDatabaseIfNotExists();
+    // await this.databaseCreator.createDatabaseIfNotExists();
     await this.checkUserTable(); // Verifica e cria a tabela de usuário se necessário
   }
 
