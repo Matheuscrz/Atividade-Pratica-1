@@ -64,7 +64,7 @@ class Database {
   }
 
   async initialize(): Promise<void> {
-    // await this.databaseCreator.createDatabaseIfNotExists();
+    await this.databaseCreator.createDatabaseIfNotExists();
     await this.checkUserTable(); // Verifica e cria a tabela de usuário se necessário
   }
 
